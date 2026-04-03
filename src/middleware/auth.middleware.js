@@ -11,6 +11,14 @@ async function authMiddleware(req,res,next) {
         })
     }
 
+    const isTokenBlacklisted = await tokenBlackListModel.findOne({token})
+    
+    if(isTokenBlacklisted){
+        return res.status(401).json({
+            message:"Unauthorized access, token is blacklisted"
+        })
+    }
+
     try{
         const decoded = jwt.verify(token , process.env.JWT_SECRET)
 

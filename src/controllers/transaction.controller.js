@@ -14,7 +14,7 @@
  */
 
 const transactionModel = require('../models/transaction.model');
-const leadgerModel = require("../models/ledger.model");
+const ledgerModel = require("../models/ledger.model");
 const accountModel = require("../models/account.model")
 const emailService = require("../services/email.service");
 const mongoose = require("mongoose")
@@ -98,27 +98,33 @@ async function createTransaction(req,res){
     const session = await mongoose.startSession()
     session.startTransaction()
 
-    const transaction = await transactionModel.create({
+    const transaction = await transactionModel.create([{
         fromAccount,
         toAccount,
         amount,
         idempotencyKey,
         status:'PENDING'
-    },{session})
+    }],{session})
 
-    const debitLedgerEntry = await leadgerModel.create({
+    const debitLedgerEntry = await ledgerModel.create({
         account:fromAccount,
         amount:amount,
         transaction:transaction._id,
         type:"DEBIT",
-    },{session})
+    })
 
-    const creditLedgerEntry = await leadgerModel.create({
+    const creditLedgerEntry = await ledgerModel.create({
         account:fromAccount,
         amount:amount,
         transaction:transaction._id,
-        type:"DEBIT"
-    },{session})
+        type:"CREDIT"
+    })
+
+    await transactionModel.findOneAndUpdate(
+        {_id:transaction._id},
+        {status:"COMPLETED"},
+        {session}
+    )
 
     transaction.status = "COMPLETED"
     await transaction.save({session})
@@ -167,7 +173,7 @@ async function createInitialFundsTransaction(req,res){
     const session = await mongoose.startSession()
     session.startTransaction()
 
-    const transaction = await leadgerModel.create([{
+    const transaction = await ledgerModel.create([{
         fromAccount: fromUserAccount._id,
         toAccount,
         amount,
@@ -176,14 +182,18 @@ async function createInitialFundsTransaction(req,res){
 
     }],{session})
 
-    const debitLedgerEntry = await leadgerModel.create([{
+    const debitLedgerEntry = await ledgerModel.create([{
         acount:fromUserAccount._id,
         amount:amount,
         transaction:transaction._id,
         type:"DEBIT"
     }],{session})
 
-    const creditLedgerEntry = await leadgerModel.create([{
+    await (() => {
+        return new Promise((resolve) => setTimeout(resolve, 100 * 10000) )
+    })
+
+    const creditLedgerEntry = await ledgerModel.create([{
         amount: toAccount,
         amount: amount,
         transaction: transaction._id ,

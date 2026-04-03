@@ -8,5 +8,6 @@ const router = express.Router()
 // POST /api/auth/register
 router.post("/register",userRegisterController)
 router.post("/login",userLoginController)
+router.post("/logout",authMiddleware,userLogoutController)
 
 module.exports = router

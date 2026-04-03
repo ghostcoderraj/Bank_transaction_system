@@ -81,7 +81,25 @@ async function userLoginController(req, res) {
     await emailService.sendRegistrationEmail(user.email,user.name)
 }
 
+async function userLogoutController(req,res){
+    const token = req.cookies.token || req.headers.authorization?.split(" ")[1]
+   
+    if(!token){
+        return res.status(401).json({
+            message:"User loged out successfully"
+        })
+    }
+
+    await tokenBlackListModel.create({
+        token:token
+    })
+   
+    res.status(200).json({
+        message:"User loged out successfully"
+    })
+
+}
 
 module.exports = {
-    userRegisterController,userLoginController
+    userRegisterController,userLoginController,userLogoutController
 }

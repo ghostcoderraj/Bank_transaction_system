@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
-const { error } = require('node:console')
 
-const leadgerSchema = new mongoose.Schema({
+const ledgerSchema = new mongoose.Schema({
     account:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"account",
@@ -36,15 +35,15 @@ function preventLedgerModification(){
     throw new error("Ledger enteries are immutable and cannot be modified or deleted");
 }
 
-leadgerSchema.pre("findOneAndUpdate",preventLedgerModification);
-leadgerSchema.pre("updateOne",preventLedgerModification);
-leadgerSchema.pre("deleteOne",preventLedgerModification);
-leadgerSchema.pre("remove",preventLedgerModification);
-leadgerSchema.pre("remove",preventLedgerModification);
-leadgerSchema.pre("deleteMany",preventLedgerModification);
-leadgerSchema.pre("findOneAndDelete",preventLedgerModification)
-leadgerSchema.pre('findOneAndReplace',preventLedgerModification)
+ledgerSchema.pre("findOneAndUpdate",preventLedgerModification);
+ledgerSchema.pre("updateOne",preventLedgerModification);
+ledgerSchema.pre("deleteOne",preventLedgerModification);
+ledgerSchema.pre("remove",preventLedgerModification);
+ledgerSchema.pre("remove",preventLedgerModification);
+ledgerSchema.pre("deleteMany",preventLedgerModification);
+ledgerSchema.pre("findOneAndDelete",preventLedgerModification)
+ledgerSchema.pre('findOneAndReplace',preventLedgerModification)
 
-const leadgerModel = mongoose.model('leader',leadgerSchema);
+const ledgerModel = mongoose.model('ledger',ledgerSchema);
 
-module.exports = leadgerModel;
+module.exports = ledgerModel;
