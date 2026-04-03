@@ -9,12 +9,12 @@ const router = express.Router()
 // Create a new account
 // protected route
 
-router.post("/accounts",authMiddleware,createAccountController)
+router.post("/",authMiddleware,createAccountController)
 // GET /api/accounts
 // Get all accounts
 // protected route
 
-router.get("/accounts",authMiddleware,getUserAccountsController)
+router.get("/",authMiddleware,getUserAccountsController)
 
 // Get /api/accounts/:accountId
 // Get a single account

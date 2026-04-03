@@ -5,7 +5,7 @@ const cookieParser = require("cookie-parser")
 //         Routes
 const authRouter = require("./routes/auth.routes")
 const accountRouter = require("./routes/account.routes")
-const transactionRoutes = require('./routes/transaction.routes')
+const transactionRoutes = require("./routes/transaction.routes")
 
 const app = express()
 
